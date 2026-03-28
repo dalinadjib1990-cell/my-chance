@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teacher Contest VIP PRO</title>
+<style>
+:root{
+--bg:#0b0f14;
+--card:#121821;
+--neon:#00f7ff;
+--text:#e6f1ff;
+--success:#00ff7f;
+--warn:#ffcc00;
+--danger:#ff3f3f;
+}
+body{margin:0;font-family:Arial;background:var(--bg);color:var(--text);}
+.container{max-width:450px;margin:auto;padding:15px;}
+.card{background:var(--card);border-radius:15px;padding:12px;margin-top:10px;box-shadow:0 0 20px rgba(0,255,255,0.15);}
+input,select{width:100%;padding:10px;margin-top:5px;border-radius:10px;border:none;}
+button{width:100%;padding:10px;margin-top:10px;border:none;border-radius:10px;background:var(--neon);font-weight:bold;cursor:pointer;}
+.tabs{display:flex;gap:5px;margin-top:10px;}
+.tab{flex:1;text-align:center;padding:10px;cursor:pointer;border-radius:10px;background:#111;}
+.active{background:var(--neon);color:black;}
+.hidden{display:none;}
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- LOGIN -->
+<div id="login" class="card">
+<h3>🔐 تفعيل التطبيق VIP</h3>
+<p id="device"></p>
+<input id="code" placeholder="أدخل كود التفعيل">
+<button onclick="activate()">تفعيل</button>
+</div>
+
+<!-- APP -->
+<div id="app" class="hidden">
+
+<div class="tabs">
+<div class="tab active" onclick="showTab(0)">📊 الحساب</div>
+<div class="tab" onclick="showTab(1)">🏆 أفضل النتائج</div>
+<div class="tab" onclick="showTab(2)">📁 السجل الكامل</div>
+</div>
+
+<!-- TAB الحساب -->
+<div id="tab0" class="card">
+<h3>إدخال المعلومات</h3>
+
+<select id="cycle">
+<option>ابتدائي</option>
+<option>متوسط</option>
+<option>ثانوي</option>
+</select>
+
+<select id="degree">
+<option value="6">مطابقة للتخصص</option>
+<option value="4">قريبة من التخصص</option>
+</select>
+
+<input id="avg" type="number" placeholder="المعدل العام">
+<label><input type="checkbox" id="top"> الأول على الدفعة</label>
+<input id="grad" type="number" placeholder="سنة التخرج">
+
+<input id="exp1" type="number" placeholder="خبرة في نفس الرتبة">
+<input id="exp2" type="number" placeholder="خبرة في المؤسسات الخاصة">
+
+<input id="train" type="number" placeholder="عدد السداسيات للتكوين المكمل">
+<input id="res" type="number" placeholder="عدد البحوث أو المنشورات">
+
+<input id="oral" type="number" placeholder="المقابلة الشفوية /3">
+
+<input id="pos" type="number" placeholder="عدد المناصب">
+<input id="cand" type="number" placeholder="عدد المترشحين">
+
+<button onclick="calc()">احسب</button>
+
+<div id="details"></div>
+<div id="result"></div>
+</div>
+
+<!-- TAB ترتيب -->
+<div id="tab1" class="card hidden">
+<h3>🏆 أفضل 10</h3>
+<div id="rank"></div>
+</div>
+
+<!-- TAB سجل -->
+<div id="tab2" class="card hidden">
+<h3>📁 السجل الكامل</h3>
+<div id="history"></div>
+</div>
+
+</div>
+
+<script>
+// ===== حماية الجهاز =====
+function deviceID(){return btoa(navigator.userAgent + screen.width + screen.height);}
+document.getElementById("device").innerText="📱 رقم جهازك: "+deviceID().slice(0,12);
+function genKey(id){return btoa(id).slice(0,8);}
+function activate(){
+let id=deviceID();
+let code=document.getElementById("code").value;
+if(code===genKey(id)){localStorage.setItem("active","1");start();}
+else alert("❌ كود التفعيل غير صحيح");}
+if(localStorage.getItem("active")=="1") start();
+
+// ===== Tabs =====
+function showTab(i){
+document.querySelectorAll(".tab").forEach((t,idx)=>{
+t.classList.toggle("active",idx===i);
+document.getElementById("tab"+idx).classList.toggle("hidden",idx!==i);
+});
+}
+
+// ===== حساب النقاط =====
+function calc(){
+let total=0;
+// 1️⃣ الشهادة
+let cycle=val("cycle");
+let cert=(cycle==="ابتدائي")?6:val("degree");
+total += cert;
+// 2️⃣ المعدل
+let avg=val("avg");
+let avgScore=avg>=16?7:avg>=15?6:avg>=14?5:avg>=13?4:avg>=12?3:avg>=11?2:avg>=10.5?1:0;
+total += avgScore;
+// 3️⃣ الأول على الدفعة
+let top = el("top").checked?1:0;
+total += top;
+// 4️⃣ أقدمية
+let year=new Date().getFullYear();
+let seniority=Math.min((year-val("grad"))*0.5,5);
+total += seniority;
+// 5️⃣ الخبرة
+let expTotal=Math.min(val("exp1")+val("exp2")*0.5,6);
+total += expTotal;
+// 6️⃣ التكوين المكمل
+let train=Math.min(val("train")*0.25,2);
+total += train;
+// 7️⃣ الأشغال والدراسات
+let research=Math.min(val("res")*0.5,1);
+total += research;
+// 8️⃣ المقابلة الشفوية
+let oral=val("oral");
+total += oral;
+
+// ===== تحليل فرص النجاح =====
+let ratio=val("pos")/val("cand");
+let probability=Math.min(Math.pow(ratio,0.7)*100,100);
+
+// ===== تصنيف المرشح =====
+let status="";
+if(total>=20) status="🔥 مرشح قوي جدا";
+else if(total>=15) status="💪 مرشح احتياطي";
+else if(total>=10) status="⚠️ نجاح محتمل (يعتمد على الحظ)";
+else status="📉 ضعيف";
+
+// ===== عرض التفاصيل =====
+el("details").innerHTML=`
+<div class="card">
+📌 الشهادة: ${cert} <br>
+📌 المعدل العام: ${avgScore} <br>
+📌 الأول: ${top} <br>
+📌 الأقدمية: ${seniority.toFixed(1)} <br>
+📌 الخبرة: ${expTotal.toFixed(1)} <br>
+📌 التكوين: ${train.toFixed(1)} <br>
+📌 الأشغال والدراسات: ${research.toFixed(1)} <br>
+📌 المقابلة الشفوية: ${oral}
+</div>`;
+
+// ===== عرض النتيجة =====
+el("result").innerHTML=`
+<div class="card">
+🎯 المجموع: ${total.toFixed(2)} /30 <br>
+📊 التقييم: ${status} <br>
+📈 نسبة النجاح المقدرة: ${probability.toFixed(1)}%
+</div>`;
+
+// حفظ
+save(total,status);
+}
+
+// ===== أدوات =====
+function val(id){let e=el(id);return e.tagName==="SELECT"?e.value:parseFloat(e.value)||0;}
+function el(id){return document.getElementById(id);}
+
+// ===== حفظ النتائج + ترتيب =====
+function save(score,status){
+let d=JSON.parse(localStorage.getItem("data")||"[]");
+d.push({score,status,date:new Date().toLocaleString()});
+localStorage.setItem("data",JSON.stringify(d));
+load();
+}
+
+function load(){
+let d=JSON.parse(localStorage.getItem("data")||"[]");
+// ترتيب أفضل 10
+let top10=[...d].sort((a,b)=>b.score-a.score).slice(0,10);
+el("rank").innerHTML=top10.map((x,i)=>`<div class="card">#${i+1} | ${x.score.toFixed(1)} | ${x.status}</div>`).join("");
+// سجل كامل
+el("history").innerHTML=d.map(x=>`<div class="card">${x.score.toFixed(1)} | ${x.status} | ${x.date}</div>`).join("");
+}
+</script>
+</body>
+</html>
