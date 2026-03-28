@@ -15,7 +15,7 @@
 --danger:#ff3f3f;
 }
 body{margin:0;font-family:Arial;background:var(--bg);color:var(--text);}
-.container{max-width:450px;margin:auto;padding:15px;}
+.container{max-width:500px;margin:auto;padding:15px;}
 .card{background:var(--card);border-radius:15px;padding:12px;margin-top:10px;box-shadow:0 0 20px rgba(0,255,255,0.15);}
 input,select{width:100%;padding:10px;margin-top:5px;border-radius:10px;border:none;}
 button{width:100%;padding:10px;margin-top:10px;border:none;border-radius:10px;background:var(--neon);font-weight:bold;cursor:pointer;}
@@ -23,6 +23,21 @@ button{width:100%;padding:10px;margin-top:10px;border:none;border-radius:10px;ba
 .tab{flex:1;text-align:center;padding:10px;cursor:pointer;border-radius:10px;background:#111;}
 .active{background:var(--neon);color:black;}
 .hidden{display:none;}
+.profile{
+text-align:center;
+margin-bottom:10px;
+}
+.profile img{
+width:100px;
+height:100px;
+border-radius:50%;
+border:3px solid var(--neon);
+}
+.profile h3{
+margin:5px;
+color:var(--neon);
+text-shadow:0 0 10px var(--neon);
+}
 </style>
 </head>
 <body>
@@ -31,13 +46,17 @@ button{width:100%;padding:10px;margin-top:10px;border:none;border-radius:10px;ba
 <!-- LOGIN -->
 <div id="login" class="card">
 <h3>🔐 تفعيل التطبيق VIP</h3>
-<p id="device"></p>
 <input id="code" placeholder="أدخل كود التفعيل">
 <button onclick="activate()">تفعيل</button>
 </div>
 
 <!-- APP -->
 <div id="app" class="hidden">
+
+<div class="profile">
+<img src="https://i.ibb.co/2M2pL0R/profile.png" alt="profile">
+<h3>الأستاذ مكور</h3>
+</div>
 
 <div class="tabs">
 <div class="tab active" onclick="showTab(0)">📊 الحساب</div>
@@ -76,6 +95,8 @@ button{width:100%;padding:10px;margin-top:10px;border:none;border-radius:10px;ba
 <input id="cand" type="number" placeholder="عدد المترشحين">
 
 <button onclick="calc()">احسب</button>
+<button onclick="fillDemo()">🔹 تجريب افتراضي</button>
+<button onclick="resetFields()">♻️ إعادة تعيين</button>
 
 <div id="details"></div>
 <div id="result"></div>
@@ -96,16 +117,19 @@ button{width:100%;padding:10px;margin-top:10px;border:none;border-radius:10px;ba
 </div>
 
 <script>
-// ===== حماية الجهاز =====
-function deviceID(){return btoa(navigator.userAgent + screen.width + screen.height);}
-document.getElementById("device").innerText="📱 رقم جهازك: "+deviceID().slice(0,12);
-function genKey(id){return btoa(id).slice(0,8);}
+// ===== تفعيل بأكوادك فقط =====
+const validCodes = ["1100","0011","1111","1122","2211","4321"];
 function activate(){
-let id=deviceID();
-let code=document.getElementById("code").value;
-if(code===genKey(id)){localStorage.setItem("active","1");start();}
-else alert("❌ كود التفعيل غير صحيح");}
-if(localStorage.getItem("active")=="1") start();
+    let entered = document.getElementById("code").value.trim();
+    if(validCodes.includes(entered)){
+        alert("✅ تم التفعيل بنجاح! يمكنك الآن تجربة التطبيق.");
+        document.getElementById("login").classList.add("hidden");
+        document.getElementById("app").classList.remove("hidden");
+        load();
+    }else{
+        alert("❌ كود غير صالح");
+    }
+}
 
 // ===== Tabs =====
 function showTab(i){
@@ -201,6 +225,36 @@ let top10=[...d].sort((a,b)=>b.score-a.score).slice(0,10);
 el("rank").innerHTML=top10.map((x,i)=>`<div class="card">#${i+1} | ${x.score.toFixed(1)} | ${x.status}</div>`).join("");
 // سجل كامل
 el("history").innerHTML=d.map(x=>`<div class="card">${x.score.toFixed(1)} | ${x.status} | ${x.date}</div>`).join("");
+}
+
+// ===== زر التجريب الافتراضي =====
+function fillDemo(){
+el("cycle").value="متوسط";
+el("degree").value="6";
+el("avg").value=15.5;
+el("top").checked=true;
+el("grad").value=2018;
+el("exp1").value=3;
+el("exp2").value=2;
+el("train").value=4;
+el("res").value=2;
+el("oral").value=2;
+el("pos").value=10;
+el("cand").value=50;
+alert("✅ تم ملء البيانات التجريبية، اضغط احسب لتجربة التطبيق");
+}
+
+// ===== زر إعادة التعيين =====
+function resetFields(){
+["cycle","degree","avg","top","grad","exp1","exp2","train","res","oral","pos","cand"].forEach(id=>{
+let e=el(id);
+if(e.type==="checkbox") e.checked=false;
+else if(e.tagName==="SELECT") e.selectedIndex=0;
+else e.value="";
+});
+el("details").innerHTML="";
+el("result").innerHTML="";
+alert("♻️ تم إعادة تعيين جميع الحقول");
 }
 </script>
 </body>
