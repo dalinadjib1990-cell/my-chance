@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>منصة مسابقة الأساتذة - النظام التربوي الجزائري</title>
+    <title>منصة مسابقة الأساتذة - الجزائر</title>
     <style>
         * {
             margin: 0;
@@ -164,18 +164,64 @@
         }
 
         .leaderboard {
-            max-height: 280px;
+            max-height: 320px;
             overflow-y: auto;
+            padding-left: 0.2rem;
         }
 
+        /* تحسين تصميم عناصر الترتيب */
         .rank-item {
-            background: #0a1916;
-            margin: 0.5rem 0;
-            padding: 0.6rem;
-            border-radius: 1rem;
+            background: linear-gradient(95deg, #0e221f, #0a1c19);
+            margin: 0.6rem 0;
+            padding: 0.7rem 1rem;
+            border-radius: 1.2rem;
             display: flex;
+            align-items: center;
             justify-content: space-between;
-            border-right: 3px solid #2c9b8a;
+            border-right: 4px solid #2c9b8a;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        .rank-item:hover {
+            transform: translateX(-4px);
+            background: #1a3a33;
+        }
+        .rank-number {
+            font-weight: bold;
+            font-size: 1.1rem;
+            background: #2c9b8a40;
+            width: 32px;
+            height: 32px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 40px;
+            margin-left: 10px;
+        }
+        .rank-name {
+            flex: 1;
+            font-weight: 500;
+        }
+        .rank-score {
+            font-weight: bold;
+            color: #7fffea;
+            background: #0a2a24;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+        }
+        .rank-highlight {
+            background: linear-gradient(95deg, #1e5a4f, #13473e);
+            border-right: 4px solid #ffaa44;
+            box-shadow: 0 0 8px #ffaa4455;
+        }
+        .rank-highlight .rank-number {
+            background: #ffaa44aa;
+            color: #000;
+        }
+        .rank-highlight .rank-score {
+            background: #ffaa44aa;
+            color: #1e2a25;
         }
 
         .btn-group {
@@ -269,11 +315,6 @@
             background: #2c9b8a;
             border-radius: 10px;
         }
-        
-        .rank-highlight {
-            background: #1e5a4f;
-            border-right: 3px solid #ffaa44;
-        }
     </style>
 </head>
 <body>
@@ -293,7 +334,7 @@
         <div class="neon-teacher">
             <div class="avatar-icon">🧑‍🏫✨</div>
             <div class="neon-text">منصة مسابقة الأساتذة - الجزائر</div>
-            <div style="margin-right: auto; font-size:0.8rem;">📊 نظام تنقيط رسمي | إحصائيات ديناميكية</div>
+            <div style="margin-right: auto; font-size:0.8rem;">📊 نظام تنقيط رسمي | ترتيب ديناميكي</div>
         </div>
 
         <div class="dashboard">
@@ -314,7 +355,7 @@
                 <div class="input-group">
                     <label>🎯 التخصص المطلوب</label>
                     <select id="specialtySelect">
-                        <!-- سيتم تعبئته ديناميكياً حسب الطور -->
+                        <!-- يتم تعبئته ديناميكياً -->
                     </select>
                 </div>
                 <div class="input-group">
@@ -333,7 +374,7 @@
                         <option value="6">مطابقة للتخصص ➜ 6 نقاط</option>
                         <option value="4">قريبة من التخصص ➜ 4 نقاط</option>
                     </select>
-                    <small style="color:#7fffea;">🔹 ملاحظة: الطور الابتدائي يُحتسب بـ 6 نقاط تلقائياً بغض النظر عن التخصص</small>
+                    <small style="color:#7fffea;">🔹 الابتدائي: 6 نقاط تلقائياً</small>
                 </div>
                 <div class="input-group">
                     <label>📈 المعدل العام (10-20)</label>
@@ -351,23 +392,23 @@
                     <input type="number" id="gradYear" value="2019">
                 </div>
                 <div class="input-group">
-                    <label>🏢 خبرة نفس الرتبة (سنوات) - 1 نقطة لكل سنة</label>
+                    <label>🏢 خبرة نفس الرتبة (سنوات) - 1 نقطة/سنة</label>
                     <input type="number" id="expSameRank" value="2" step="0.5" min="0">
                 </div>
                 <div class="input-group">
-                    <label>🏫 خبرة في القطاع الخاص (سنوات) - 0.5 نقطة/سنة (حد أقصى 2)</label>
+                    <label>🏫 خبرة خاص (سنوات) - 0.5/سنة (حد أقصى 2)</label>
                     <input type="number" id="expPrivate" value="1" step="0.5" min="0">
                 </div>
                 <div class="input-group">
-                    <label>📚 التكوين المكمل (عدد السداسيات) - 0.25 نقطة لكل سداسي (حد أقصى 2)</label>
+                    <label>📚 التكوين المكمل (عدد السداسيات) - 0.25/سداسي (max 2)</label>
                     <input type="number" id="semesters" value="4" step="1" min="0">
                 </div>
                 <div class="input-group">
-                    <label>📄 الأبحاث والمنشورات - 0.5 نقطة لكل بحث (حد أقصى 1)</label>
+                    <label>📄 الأبحاث - 0.5/بحث (max 1)</label>
                     <input type="number" id="researchCount" value="1" step="0.5" min="0">
                 </div>
                 <div class="input-group">
-                    <label>🎤 المقابلة الشفوية (0-3 نقاط)</label>
+                    <label>🎤 المقابلة الشفوية (0-3)</label>
                     <input type="number" id="oralScore" value="2.2" step="0.1" min="0" max="3">
                 </div>
                 <div class="btn-group">
@@ -389,7 +430,7 @@
             </div>
 
             <div class="card">
-                <h2>📊 إحصائيات المسابقة (حسب الطور + التخصص)</h2>
+                <h2>📊 إحصائيات المسابقة</h2>
                 <div class="stats-grid">
                     <div class="stat-box">🎯 مناصب: <span id="statPosts">0</span></div>
                     <div class="stat-box">👥 مترشحين: <span id="statCandidates">0</span></div>
@@ -397,18 +438,16 @@
                     <div class="stat-box">⭐ متوسط النقاط: <span id="avgScore">0</span></div>
                 </div>
                 
-                <h2 style="margin-top:1rem;">📌 التخصصات المتاحة حسب الطور</h2>
+                <h2 style="margin-top:1rem;">📌 التخصصات المتاحة</h2>
                 <div id="specialtyStatsContainer"></div>
                 
-                <h2 style="margin-top:1rem;">🏅 ترتيب المتسابقين - <span id="currentContext">...</span></h2>
+                <h2 style="margin-top:1rem;">🏅 ترتيب المتسابقين</h2>
                 <div id="leaderboardList" class="leaderboard"></div>
                 <button id="refreshStatsBtn" style="margin-top:0.8rem; width:100%;">🔄 تحديث الإحصائيات</button>
                 <button id="syncStatsBtn" style="margin-top:0.5rem; background:#2c6b5e;">📊 مزامنة من المدخلات</button>
             </div>
         </div>
-        <footer>
-            🇩🇿 تطبيق معتمد على النظام التربوي الجزائري | الابتدائي: تخصصي عربية وفرنسية فقط | المتوسط والثانوي: جميع التخصصات
-        </footer>
+        <footer>🇩🇿 النظام التربوي الجزائري | الابتدائي: عربية وفرنسية فقط | المتوسط والثانوي: جميع التخصصات</footer>
     </div>
 </div>
 
@@ -429,7 +468,7 @@
         }
     });
     
-    // ==================== تعريف التخصصات حسب الطور الجزائري ====================
+    // ==================== التخصصات حسب الطور (الجزائر) ====================
     const specialtiesByLevel = {
         primary: [
             { id: 'arabic_primary', name: 'لغة عربية', display: 'لغة عربية' },
@@ -470,11 +509,11 @@
         });
     }
     
-    // ==================== حساب النقاط الدقيق ====================
+    // ==================== حساب النقاط ====================
     function calculateExactScore() {
         const level = document.getElementById('teachingLevel').value;
         let diploma = parseFloat(document.getElementById('diplomaMatch').value);
-        if (level === 'primary') diploma = 6;  // الابتدائي: جميع التخصصات 6 نقاط
+        if (level === 'primary') diploma = 6;
         
         const generalAvg = parseFloat(document.getElementById('generalAvg').value);
         const topBonus = parseInt(document.getElementById('topClass').value);
@@ -495,14 +534,11 @@
         else if (generalAvg >= 16) avgPoints = 7;
         
         let academicTotal = avgPoints + topBonus;
-        
         const currentYear = new Date().getFullYear();
         let seniority = Math.min(5, Math.max(0, currentYear - gradYear) * 0.5);
-        
         let expRankPoints = expSame;
         let expPrivatePoints = Math.min(2, expPrivate * 0.5);
         let totalExp = expRankPoints + expPrivatePoints;
-        
         let trainingPoints = Math.min(2, semesters * 0.25);
         let researchPoints = Math.min(1, research * 0.5);
         
@@ -511,70 +547,52 @@
     }
     
     function getBreakdownText() {
-        const diploma = document.getElementById('diplomaMatch').value;
-        const avg = document.getElementById('generalAvg').value;
-        return `🎓 شهادة: ${diploma} | 📚 معدل: ${avg} | 🎤 شفوي: ${document.getElementById('oralScore').value}`;
+        return `🎓 شهادة: ${document.getElementById('diplomaMatch').value} | 📚 معدل: ${document.getElementById('generalAvg').value} | 🎤 شفوي: ${document.getElementById('oralScore').value}`;
     }
     
-    // ==================== قاعدة بيانات المتسابقين (حسب الطور + التخصص) ====================
+    // ==================== بيانات المتسابقين ====================
     let contestants = [];
-    
     function loadContestants() {
-        const stored = localStorage.getItem('contestants_alg_v5');
+        const stored = localStorage.getItem('contestants_alg_v6');
         if (stored) contestants = JSON.parse(stored);
         else contestants = [];
     }
-    
     function saveContestants() {
-        localStorage.setItem('contestants_alg_v5', JSON.stringify(contestants));
+        localStorage.setItem('contestants_alg_v6', JSON.stringify(contestants));
     }
     
-    // الحصول على المفتاح الفريد للطور+التخصص
-    function getContextKey(level, specialtyId) {
-        return `${level}_${specialtyId}`;
-    }
-    
-    // إحصائيات خاصة بسياق (طور + تخصص)
     function getContextStats(level, specialtyId) {
         const filtered = contestants.filter(c => c.level === level && c.specialty === specialtyId);
         const postsInput = parseInt(document.getElementById('postCount').value);
         const candidatesInput = parseInt(document.getElementById('candidateCount').value);
-        
-        let avgScore = 0, maxScore = 0, minScore = 100;
+        let avgScore = 0, maxScore = 0;
         if (filtered.length > 0) {
             const sum = filtered.reduce((acc, c) => acc + c.score, 0);
             avgScore = sum / filtered.length;
             maxScore = Math.max(...filtered.map(c => c.score));
-            minScore = Math.min(...filtered.map(c => c.score));
         } else {
             avgScore = 14.5;
             maxScore = 17.5;
-            minScore = 11.0;
         }
-        
         return {
             posts: postsInput,
             candidates: candidatesInput,
             avgScore: avgScore.toFixed(1),
             maxScore: maxScore.toFixed(1),
-            minScore: minScore.toFixed(1),
             registeredCount: filtered.length
         };
     }
     
-    // عرض جميع التخصصات المتاحة حسب الطور المختار
     function renderSpecialtyStats() {
         const currentLevel = document.getElementById('teachingLevel').value;
         const specialties = specialtiesByLevel[currentLevel];
         const container = document.getElementById('specialtyStatsContainer');
         let html = '';
-        
         specialties.forEach(spec => {
             const stats = getContextStats(currentLevel, spec.id);
             const rate = ((stats.posts / stats.candidates) * 100).toFixed(1);
             const competitionLevel = rate > 20 ? 'منخفضة' : (rate > 12 ? 'متوسطة' : 'عالية');
             const competitionColor = competitionLevel === 'عالية' ? '#ff9966' : (competitionLevel === 'متوسطة' ? '#ffcc66' : '#66cc99');
-            
             html += `
                 <div class="specialty-card" onclick="selectSpecialty('${spec.id}')">
                     <div style="display:flex; justify-content:space-between;">
@@ -586,31 +604,23 @@
                         <span>👥 مترشحين: ${stats.candidates}</span>
                         <span>📈 نسبة القبول: ${rate}%</span>
                     </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: ${Math.min(100, (stats.posts / stats.candidates) * 200)}%;"></div>
-                    </div>
+                    <div class="progress-bar"><div class="progress-fill" style="width: ${Math.min(100, (stats.posts / stats.candidates) * 200)}%;"></div></div>
                     <div style="font-size:0.7rem; margin-top:4px; color:${competitionColor};">⚡ منافسة ${competitionLevel} | متوسط النقاط: ${stats.avgScore}</div>
-                    <div style="font-size:0.65rem; color:#88aa99;">📌 مسجلين: ${stats.registeredCount} متسابق</div>
+                    <div style="font-size:0.65rem; color:#88aa99;">📌 مسجلين: ${stats.registeredCount}</div>
                 </div>
             `;
         });
-        
         container.innerHTML = html;
         
-        // تحديث الإحصائيات للتخصص الحالي
         const currentSpec = document.getElementById('specialtySelect').value;
         const currentStats = getContextStats(currentLevel, currentSpec);
         document.getElementById('statPosts').innerText = currentStats.posts;
         document.getElementById('statCandidates').innerText = currentStats.candidates;
-        const acceptRate = ((currentStats.posts / currentStats.candidates) * 100).toFixed(1);
-        document.getElementById('acceptRate').innerHTML = acceptRate + '%';
+        document.getElementById('acceptRate').innerHTML = ((currentStats.posts / currentStats.candidates) * 100).toFixed(1) + '%';
         document.getElementById('avgScore').innerHTML = currentStats.avgScore;
-        
-        const specDisplay = specialties.find(s => s.id === currentSpec)?.display || '';
-        document.getElementById('currentContext').innerHTML = `${currentLevel === 'primary' ? 'ابتدائي' : (currentLevel === 'middle' ? 'متوسط' : 'ثانوي')} - ${specDisplay}`;
     }
     
-    // عرض لوحة المتصدرين
+    // ==================== تحسين عرض الترتيب ====================
     function renderLeaderboard() {
         const level = document.getElementById('teachingLevel').value;
         const specialty = document.getElementById('specialtySelect').value;
@@ -627,19 +637,23 @@
         let html = '';
         filtered.slice(0, 20).forEach((c, idx) => {
             const isCurrentUser = (c.name === currentUserName && Math.abs(c.score - currentUserScore) < 0.01);
-            html += `<div class="rank-item ${isCurrentUser ? 'rank-highlight' : ''}">
-                        <span><strong>${idx+1}</strong> - ${c.name}</span>
-                        <span style="color:#7fffea; font-weight:bold;">${c.score.toFixed(2)} / 30</span>
-                     </div>`;
+            const rankNum = idx + 1;
+            html += `
+                <div class="rank-item ${isCurrentUser ? 'rank-highlight' : ''}">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span class="rank-number">${rankNum}</span>
+                        <span class="rank-name">${c.name}</span>
+                    </div>
+                    <span class="rank-score">${c.score.toFixed(2)} / 30</span>
+                </div>
+            `;
         });
-        
         if (filtered.length > 20) {
-            html += `<div style="font-size:0.7rem; text-align:center; margin-top:0.5rem;">+${filtered.length-20} متسابق آخر</div>`;
+            html += `<div style="text-align:center; margin-top:8px; font-size:0.7rem; color:#7fffea;">+ ${filtered.length-20} متسابق آخر</div>`;
         }
         leaderDiv.innerHTML = html;
     }
     
-    // حساب الترتيب والتوقعات
     function updateRankAndPrediction() {
         const level = document.getElementById('teachingLevel').value;
         const specialty = document.getElementById('specialtySelect').value;
@@ -647,84 +661,46 @@
         const stats = getContextStats(level, specialty);
         const filtered = contestants.filter(c => c.level === level && c.specialty === specialty);
         const better = filtered.filter(c => c.score > userScore).length;
-        const equal = filtered.filter(c => Math.abs(c.score - userScore) < 0.01 && c.name !== document.getElementById('candidateName').value.trim()).length;
         const rank = better + 1;
         const total = filtered.length + 1;
         
-        let rankText = '';
-        if (filtered.length === 0) {
-            rankText = '📊 أنت أول متسابق مسجل في هذا التخصص';
-        } else {
-            rankText = `📊 ترتيبك الحالي: ${rank} من ${total} متسابق (${better} متسابق أعلى منك، ${equal} مساوٍ)`;
-        }
-        
+        let rankText = filtered.length === 0 ? '📊 أنت أول متسابق مسجل' : `📊 ترتيبك: ${rank} من ${total}`;
         const acceptanceRate = stats.posts / stats.candidates;
         let prediction = '';
-        if (rank <= stats.posts) {
-            prediction = '🎯 ✅ فرصة قبول ممتازة - أنت ضمن المناصب المباشرة';
-        } else if (rank <= stats.posts * 1.5) {
-            prediction = '🔄 ⚠️ فرصة قبول جيدة - ضمن قائمة الاحتياط، الترقب واردة';
-        } else if (userScore >= stats.avgScore) {
-            prediction = '📈 🟡 فرصة متوسطة - نقاطك أعلى من المتوسط، قد تكون في الاحتياط حسب المنافسة';
-        } else {
-            prediction = '📉 🔴 فرصة محدودة - نوصي بالتحضير للمسابقة القادمة وتحسين النقاط';
-        }
+        if (rank <= stats.posts) prediction = '🎯 ✅ فرصة قبول ممتازة';
+        else if (rank <= stats.posts * 1.5) prediction = '🔄 ⚠️ فرصة قبول جيدة (احتياط)';
+        else if (userScore >= stats.avgScore) prediction = '📈 🟡 فرصة متوسطة';
+        else prediction = '📉 🔴 فرصة محدودة';
         
-        document.getElementById('rankCompared').innerHTML = `${rankText}<br><br><strong>🔮 توقع القبول:</strong> ${prediction}`;
-        
-        const neededScore = parseFloat(stats.avgScore) + (acceptanceRate < 0.12 ? 2 : (acceptanceRate < 0.2 ? 1 : 0));
-        if (userScore < neededScore && acceptanceRate < 0.25) {
-            document.getElementById('positionPrediction').innerHTML = `
-                <strong>📈 تحسين الأداء:</strong><br>
-                لتعزيز فرصك، ينصح برفع نقاطك بمقدار ${(neededScore - userScore).toFixed(1)} نقطة<br>
-                عبر زيادة الخبرة أو التكوين المكمل أو تحسين المقابلة الشفوية.
-            `;
-        } else {
-            document.getElementById('positionPrediction').innerHTML = `
-                <strong>📊 تحليل المنافسة:</strong><br>
-                متوسط نقاط التخصص: ${stats.avgScore}<br>
-                أعلى نقطة مسجلة: ${stats.maxScore}<br>
-                نسبة المناصب: ${((stats.posts/stats.candidates)*100).toFixed(1)}%
-            `;
-        }
+        document.getElementById('rankCompared').innerHTML = `${rankText}<br><strong>🔮 التوقع:</strong> ${prediction}`;
+        document.getElementById('positionPrediction').innerHTML = `📊 متوسط التخصص: ${stats.avgScore} | أعلى نقطة: ${stats.maxScore} | نسبة القبول: ${((stats.posts/stats.candidates)*100).toFixed(1)}%`;
     }
     
     function updatePersonalUI() {
         const score = calculateExactScore();
         document.getElementById('finalScoreSpan').innerHTML = score.toFixed(2) + " / 30";
         document.getElementById('detailsBreakdown').innerHTML = getBreakdownText();
-        
         let advice = '';
-        if (score >= 22) advice = '🏆 مرشح ممتاز - فرصة نجاح كبيرة جداً، أنت من النخبة';
-        else if (score >= 19) advice = '⭐ مرشح قوي جداً - ضمن القائمة الرئيسية غالباً';
-        else if (score >= 16) advice = '✅ مرشح قوي - فرصة جيدة للقبول أو الاحتياط الأول';
-        else if (score >= 13) advice = '🔄 مرشح متوسط - فرصة واردة حسب المنافسة والحظ';
-        else if (score >= 10) advice = '⚠️ مقبول - يحتاج تحسين نقاط للمنافسة القادمة';
-        else advice = '📚 نوصي بالاستعداد الجيد واكتساب خبرة إضافية للمسابقات المقبلة';
-        
-        document.getElementById('personalAdvice').innerHTML = `<strong>📢 تقييم أدائك:</strong> ${advice}`;
+        if (score >= 22) advice = '🏆 مرشح ممتاز - فرصة نجاح كبيرة جداً';
+        else if (score >= 19) advice = '⭐ مرشح قوي جداً';
+        else if (score >= 16) advice = '✅ مرشح قوي';
+        else if (score >= 13) advice = '🔄 مرشح متوسط';
+        else if (score >= 10) advice = '⚠️ مقبول - يحتاج تحسين';
+        else advice = '📚 نوصي بالاستعداد الجيد';
+        document.getElementById('personalAdvice').innerHTML = `<strong>📢 تقييمك:</strong> ${advice}`;
     }
     
     function saveCurrentCandidate() {
         let name = document.getElementById('candidateName').value.trim();
-        if (!name) {
-            alert("⚠️ الرجاء إدخال اسم مستعار للمقارنة");
-            return false;
-        }
-        
+        if (!name) { alert("⚠️ الرجاء إدخال اسم مستعار"); return false; }
         const level = document.getElementById('teachingLevel').value;
         const specialty = document.getElementById('specialtySelect').value;
         const score = calculateExactScore();
-        
-        const existingIndex = contestants.findIndex(c => c.name === name && c.level === level && c.specialty === specialty);
-        if (existingIndex !== -1) {
-            contestants[existingIndex] = { name, level, specialty, score, timestamp: Date.now() };
-        } else {
-            contestants.push({ name, level, specialty, score, timestamp: Date.now() });
-        }
-        
+        const idx = contestants.findIndex(c => c.name === name && c.level === level && c.specialty === specialty);
+        if (idx !== -1) contestants[idx] = { name, level, specialty, score, timestamp: Date.now() };
+        else contestants.push({ name, level, specialty, score, timestamp: Date.now() });
         contestants.sort((a,b) => b.score - a.score);
-        if (contestants.length > 300) contestants = contestants.slice(0, 300);
+        if (contestants.length > 300) contestants = contestants.slice(0,300);
         saveContestants();
         return true;
     }
@@ -735,11 +711,6 @@
         renderLeaderboard();
         updatePersonalUI();
         updateRankAndPrediction();
-    }
-    
-    function syncFromInputs() {
-        refreshAll();
-        alert('✅ تم تحديث الإحصائيات بناءً على أعداد المناصب والمترشحين المدخلة');
     }
     
     function selectSpecialty(specId) {
@@ -758,18 +729,15 @@
     }
     
     function testSimulate() {
-        const names = ['أحمد المنصوري', 'فاطمة الزهراء', 'يوسف بن عدي', 'نورة السالمي', 'علي مراد', 'سارة العمري', 'محمد الأمين', 'لينا خالد'];
+        const names = ['أحمد المنصوري', 'فاطمة الزهراء', 'يوسف بن عدي', 'نورة السالمي', 'علي مراد', 'سارة العمري'];
         const randomName = names[Math.floor(Math.random() * names.length)] + '_' + Math.floor(Math.random() * 1000);
         document.getElementById('candidateName').value = randomName;
         document.getElementById('generalAvg').value = (12 + Math.random() * 5).toFixed(2);
         document.getElementById('expSameRank').value = Math.floor(Math.random() * 5);
         document.getElementById('oralScore').value = (1.5 + Math.random() * 1.5).toFixed(1);
-        document.getElementById('postCount').value = 20 + Math.floor(Math.random() * 40);
-        document.getElementById('candidateCount').value = 120 + Math.floor(Math.random() * 300);
-        
         if (saveCurrentCandidate()) {
             refreshAll();
-            alert(`🧪 تمت إضافة ${randomName} إلى قائمة المتسابقين بنجاح`);
+            alert(`🧪 تمت إضافة ${randomName}`);
         }
     }
     
@@ -777,34 +745,15 @@
         updateSpecialtyOptions();
         loadContestants();
         refreshAll();
-        
-        // Event listeners
-        document.getElementById('calcSaveBtn').addEventListener('click', () => {
-            if (saveCurrentCandidate()) {
-                refreshAll();
-                alert('✅ تم تسجيل نتيجتك ومقارنتها مع المتسابقين الآخرين');
-            }
-        });
+        document.getElementById('calcSaveBtn').addEventListener('click', () => { if(saveCurrentCandidate()) refreshAll(); alert('✅ تم التسجيل'); });
         document.getElementById('resetFormBtn').addEventListener('click', resetForm);
         document.getElementById('testSimulateBtn').addEventListener('click', testSimulate);
         document.getElementById('refreshStatsBtn').addEventListener('click', () => refreshAll());
-        document.getElementById('syncStatsBtn').addEventListener('click', syncFromInputs);
-        document.getElementById('teachingLevel').addEventListener('change', () => {
-            updateSpecialtyOptions();
-            refreshAll();
-        });
+        document.getElementById('syncStatsBtn').addEventListener('click', () => refreshAll());
+        document.getElementById('teachingLevel').addEventListener('change', () => { updateSpecialtyOptions(); refreshAll(); });
         document.getElementById('specialtySelect').addEventListener('change', () => refreshAll());
-        
-        const inputs = ['diplomaMatch', 'generalAvg', 'topClass', 'gradYear', 'expSameRank', 'expPrivate', 'semesters', 'researchCount', 'oralScore', 'postCount', 'candidateCount'];
-        inputs.forEach(id => {
-            const el = document.getElementById(id);
-            if (el) el.addEventListener('input', () => {
-                updatePersonalUI();
-                if (id === 'postCount' || id === 'candidateCount') renderSpecialtyStats();
-                updateRankAndPrediction();
-                renderLeaderboard();
-            });
-        });
+        const inputs = ['diplomaMatch','generalAvg','topClass','gradYear','expSameRank','expPrivate','semesters','researchCount','oralScore','postCount','candidateCount'];
+        inputs.forEach(id => document.getElementById(id).addEventListener('input', () => { updatePersonalUI(); renderSpecialtyStats(); updateRankAndPrediction(); renderLeaderboard(); }));
     }
     
     window.selectSpecialty = selectSpecialty;
