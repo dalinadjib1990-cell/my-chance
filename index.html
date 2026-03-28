@@ -3,726 +3,632 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>DALI AI AUTOU PRO - Diagnostic OBD Algérie</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>منصة مسابقة الأساتذة - نظام تنقيط احترافي</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Cairo', 'Tajawal', 'Segoe UI', system-ui, sans-serif;
         }
 
         body {
-            font-family: 'Cairo', sans-serif;
-            background: #0a0e1a;
-            color: #eef5ff;
-            line-height: 1.6;
+            background: #0a0f0e;
+            min-height: 100vh;
             padding: 1.5rem;
+            color: #eef5ff;
         }
 
-        /* وضع مظلم محسّن مع تباين عالي */
-        .app-container {
-            max-width: 1600px;
+        /* Dark mode premium */
+        .app-wrapper {
+            max-width: 1400px;
             margin: 0 auto;
-            background: linear-gradient(135deg, #0f121f 0%, #07090f 100%);
-            border-radius: 2rem;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            overflow: hidden;
-            border: 1px solid rgba(66, 153, 225, 0.2);
         }
 
-        /* Header pro */
-        .header {
+        /* Modal d'authentification */
+        .auth-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(12px);
+            z-index: 2000;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding: 1.2rem 2rem;
-            background: rgba(15, 25, 45, 0.95);
-            backdrop-filter: blur(10px);
-            border-bottom: 2px solid #2d3748;
-            flex-wrap: wrap;
-            gap: 1rem;
+            justify-content: center;
+            transition: 0.3s;
         }
 
-        .logo-area h1 {
-            font-size: 1.8rem;
+        .auth-card {
+            background: #141e1c;
+            border-radius: 2rem;
+            padding: 2rem;
+            width: 90%;
+            max-width: 400px;
+            border: 1px solid #2c9b8a;
+            box-shadow: 0 25px 45px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+
+        .auth-card input {
+            background: #1f2e2b;
+            border: 1px solid #3eada0;
+            padding: 14px;
+            border-radius: 2rem;
+            width: 100%;
+            margin: 1rem 0;
+            color: white;
+            font-size: 1.2rem;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        .btn-glow {
+            background: linear-gradient(95deg, #00aa91, #008570);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            color: white;
+            font-size: 1rem;
+            transition: 0.2s;
+        }
+
+        /* main layout */
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+            gap: 1.8rem;
+            margin-top: 1rem;
+        }
+
+        .card {
+            background: #111b19;
+            border-radius: 1.8rem;
+            padding: 1.5rem;
+            border: 1px solid #2a5f55;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            transition: all 0.2s;
+        }
+
+        .card h2 {
+            color: #7fffea;
+            font-size: 1.4rem;
+            margin-bottom: 1.2rem;
+            border-right: 4px solid #2effe0;
+            padding-right: 0.8rem;
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .input-group label {
+            font-weight: 600;
+            color: #c2f5ec;
+            font-size: 0.85rem;
+        }
+
+        input, select {
+            background: #1a2a26;
+            border: 1px solid #348d7d;
+            padding: 10px 14px;
+            border-radius: 1.2rem;
+            color: #f0f9f6;
+            font-size: 0.95rem;
+        }
+
+        button {
+            background: #1f7a6b;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 1.8rem;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            background: #2c9b8a;
+            transform: scale(1.01);
+        }
+
+        .result-badge {
+            background: #05120f;
+            border-radius: 1.5rem;
+            padding: 1.2rem;
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .big-score {
+            font-size: 3rem;
             font-weight: 800;
-            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            background: linear-gradient(135deg, #e0fff5, #7effe6);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
         }
-        .logo-area p {
-            font-size: 0.75rem;
-            color: #94a3b8;
-        }
 
-        .profile-card {
+        .stats-grid {
             display: flex;
-            align-items: center;
-            gap: 1rem;
-            background: #1e293b;
-            padding: 0.5rem 1.2rem 0.5rem 1rem;
-            border-radius: 60px;
-            border: 1px solid #334155;
-        }
-        .profile-img {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: white;
-            box-shadow: 0 0 15px rgba(59,130,246,0.3);
-        }
-        .profile-info .name {
-            font-weight: 700;
-            font-size: 1rem;
-            color: #f1f5f9;
-        }
-        .profile-info .title {
-            font-size: 0.7rem;
-            color: #94a3b8;
-        }
-
-        /* Main content */
-        .main-grid {
-            display: grid;
-            grid-template-columns: 1fr 380px;
-            gap: 1.5rem;
-            padding: 1.8rem;
-        }
-
-        @media (max-width: 1024px) {
-            .main-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Formulaire section */
-        .form-section {
-            background: rgba(15, 23, 42, 0.6);
-            border-radius: 1.5rem;
-            padding: 1.5rem;
-            border: 1px solid #334155;
-        }
-
-        .filters {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .filter-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .filter-group label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #94a3b8;
-        }
-
-        select, input {
-            background: #0f172a;
-            border: 1px solid #334155;
-            padding: 0.75rem 1rem;
-            border-radius: 1rem;
-            color: #f1f5f9;
-            font-weight: 500;
-            outline: none;
-            transition: all 0.2s;
-            font-size: 0.9rem;
-            font-family: 'Cairo', monospace;
-        }
-
-        select:focus, input:focus {
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 2px rgba(59,130,246,0.2);
-        }
-
-        .code-input-group {
-            background: #0f172a;
-            border: 2px solid #3b82f6;
-            border-radius: 1rem;
-            padding: 0.5rem 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .code-input-group i {
-            color: #3b82f6;
-            font-size: 1.2rem;
-        }
-        .code-input-group input {
-            background: transparent;
-            border: none;
-            padding: 0.5rem;
-            width: 100%;
-            font-size: 1.2rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-        }
-        .code-input-group input:focus {
-            box-shadow: none;
-        }
-
-        .random-codes {
-            display: flex;
+            justify-content: space-between;
+            gap: 0.8rem;
             flex-wrap: wrap;
-            gap: 0.5rem;
-            margin: 0.8rem 0;
+            margin-top: 1rem;
         }
-        .random-badge {
-            background: #1e293b;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-family: monospace;
-            cursor: pointer;
-            transition: 0.2s;
-            border: 1px solid #475569;
+
+        .stat-box {
+            background: #0a1714;
+            padding: 0.7rem;
+            border-radius: 1rem;
+            flex: 1;
+            text-align: center;
         }
-        .random-badge:hover {
-            background: #3b82f6;
-            border-color: #3b82f6;
-            transform: scale(1.05);
+
+        .leaderboard {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .rank-item {
+            background: #0a1916;
+            margin: 0.5rem 0;
+            padding: 0.6rem;
+            border-radius: 1rem;
+            display: flex;
+            justify-content: space-between;
+            border-right: 3px solid #2c9b8a;
         }
 
         .btn-group {
             display: flex;
-            gap: 1rem;
-            margin-top: 1.2rem;
-            flex-wrap: wrap;
-        }
-        .btn-primary {
-            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-            border: none;
-            padding: 0.8rem 1.8rem;
-            border-radius: 1rem;
-            font-weight: 700;
-            color: white;
-            cursor: pointer;
-            transition: 0.2s;
-            flex: 1;
-            font-size: 1rem;
-        }
-        .btn-secondary {
-            background: #334155;
-            border: none;
-            padding: 0.8rem 1.5rem;
-            border-radius: 1rem;
-            font-weight: 600;
-            color: white;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .btn-danger {
-            background: #dc2626;
-        }
-        .btn-primary:hover, .btn-secondary:hover {
-            transform: translateY(-2px);
-            filter: brightness(1.1);
-        }
-
-        /* Résultat */
-        .result-card {
-            background: rgba(0, 0, 0, 0.5);
-            border-radius: 1.2rem;
-            padding: 1.5rem;
-            margin-top: 1.5rem;
-            border: 1px solid #334155;
-        }
-        .code-badge {
-            font-size: 2rem;
-            font-weight: 800;
-            font-family: monospace;
-            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            padding: 0.2rem 0;
-        }
-        .desc-box {
-            background: #0f172a;
-            padding: 1rem;
-            border-radius: 1rem;
-            margin: 0.8rem 0;
-            border-right: 4px solid #3b82f6;
-        }
-        .solution-box {
-            background: #0f172a;
-            padding: 1rem;
-            border-radius: 1rem;
-            margin-top: 0.8rem;
-        }
-
-        /* Leaderboard */
-        .leaderboard-section {
-            background: rgba(15, 23, 42, 0.8);
-            border-radius: 1.5rem;
-            padding: 1.5rem;
-            border: 1px solid #334155;
-            position: sticky;
-            top: 1rem;
-        }
-        .leaderboard-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.2rem;
-            border-bottom: 2px solid #3b82f6;
-            padding-bottom: 0.5rem;
-        }
-        .stats-cards {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
             gap: 0.8rem;
-            margin-bottom: 1.5rem;
-        }
-        .stat-card {
-            background: #0f172a;
-            padding: 0.8rem;
-            border-radius: 1rem;
-            text-align: center;
-        }
-        .stat-value {
-            font-size: 1.8rem;
-            font-weight: 800;
-            color: #3b82f6;
-        }
-        .leaderboard-list {
-            max-height: 400px;
-            overflow-y: auto;
-        }
-        .leaderboard-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.8rem;
-            border-bottom: 1px solid #334155;
-            transition: 0.2s;
-        }
-        .leaderboard-item:hover {
-            background: #1e293b;
-        }
-        .rank {
-            font-weight: 700;
-            width: 40px;
-            color: #fbbf24;
-        }
-        .user-code {
-            font-family: monospace;
-            font-weight: 600;
-        }
-        .score {
-            font-weight: 800;
-            color: #3b82f6;
-        }
-        .current-user {
-            background: rgba(59,130,246,0.2);
-            border-right: 3px solid #3b82f6;
-        }
-        .reset-btn {
-            width: 100%;
             margin-top: 1rem;
-            background: #334155;
         }
 
-        .success-msg {
-            background: #10b981;
-            color: white;
-            padding: 0.5rem;
-            border-radius: 0.5rem;
-            text-align: center;
-            margin-top: 0.5rem;
-            font-size: 0.8rem;
+        .warning {
+            color: #ffb347;
         }
 
         footer {
+            margin-top: 2rem;
             text-align: center;
-            padding: 1rem;
-            color: #64748b;
             font-size: 0.7rem;
-            border-top: 1px solid #334155;
+            color: #6c988f;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1a2a26;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2c9b8a;
+            border-radius: 10px;
+        }
+        .neon-teacher {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: #0a1f1b;
+            padding: 1rem;
+            border-radius: 2rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #2effe0;
+            box-shadow: 0 0 12px #00ffcc55;
+        }
+        .avatar-icon {
+            font-size: 3rem;
+            filter: drop-shadow(0 0 6px cyan);
+        }
+        .neon-text {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-shadow: 0 0 5px #2effe0;
+            color: #c6fff0;
         }
     </style>
 </head>
 <body>
-<div class="app-container">
-    <div class="header">
-        <div class="logo-area">
-            <h1>⚡ DALI AI AUTOU PRO ⚡</h1>
-            <p>تشخيص OBD احترافي | نظام تصنيف ومقارنة</p>
-        </div>
-        <div class="profile-card">
-            <div class="profile-img">
-                <i class="fas fa-chart-line"></i>
-            </div>
-            <div class="profile-info">
-                <div class="name">developer dali nadjib</div>
-                <div class="title"><i class="fas fa-trophy"></i> نظام المنافسة والتحليل</div>
-            </div>
+<div class="app-wrapper">
+    <!-- Auth Modal -->
+    <div id="authModal" class="auth-overlay">
+        <div class="auth-card">
+            <div style="font-size: 2.5rem;">🔐</div>
+            <h2 style="margin:0.5rem 0">رمز الدخول</h2>
+            <p>أدخل الكود السري للوصول إلى المنصة</p>
+            <input type="password" id="accessCode" placeholder="••••" maxlength="4" style="text-align:center; font-size:1.8rem;">
+            <button class="btn-glow" id="verifyBtn">تأكيد الدخول</button>
+            <p style="font-size:0.7rem; margin-top:1rem;">⚡ أكواد صالحة: 1100 / 0011 / 4321 / 1122 / 2211 / 9876 / 6789</p>
         </div>
     </div>
 
-    <div class="main-grid">
-        <!-- Colonne gauche: Diagnostic -->
-        <div class="form-section">
-            <div class="filters">
-                <div class="filter-group">
-                    <label><i class="fas fa-car"></i> نوع السيارة</label>
-                    <select id="carBrand">
-                        <option>Renault</option><option>Peugeot</option><option>Citroën</option>
-                        <option>Dacia</option><option>Volkswagen</option><option>Hyundai</option>
-                        <option>Kia</option><option>Mercedes</option><option>BMW</option><option>Ford</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label><i class="fas fa-cube"></i> الموديل</label>
-                    <select id="carModel"></select>
-                </div>
-                <div class="filter-group">
-                    <label><i class="fas fa-calendar"></i> السنة</label>
-                    <select id="carYear">
-                        <option>2005</option><option>2010</option><option>2015</option>
-                        <option>2018</option><option>2020</option><option>2022</option><option>2024</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <label><i class="fas fa-qrcode"></i> كود العطل OBD</label>
-                    <div class="code-input-group">
-                        <i class="fas fa-microchip"></i>
-                        <input type="text" id="customCode" placeholder="أدخل الكود (مثال: P0123 أو 1100)" maxlength="10">
-                    </div>
-                    <div class="random-codes" id="randomCodesContainer">
-                        <!-- أكواد عشوائية -->
-                    </div>
-                </div>
-            </div>
-            <div class="btn-group">
-                <button class="btn-primary" id="diagnosticBtn"><i class="fas fa-stethoscope"></i> تشخيص وحفظ النتيجة</button>
-                <button class="btn-secondary" id="testBtn"><i class="fas fa-flask"></i> تجربة عشوائية</button>
-                <button class="btn-secondary btn-danger" id="resetLocalBtn"><i class="fas fa-trash"></i> إعادة تعيين بياناتي</button>
-            </div>
-
-            <!-- Résultats -->
-            <div class="result-card" id="resultCard">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <span class="code-badge" id="displayCode">——</span>
-                    <span><i class="fas fa-chart-simple"></i> تشخيص دقيق</span>
-                </div>
-                <div class="desc-box" id="darijaDesc">
-                    <strong><i class="fas fa-comment"></i> بالدارجة الجزائرية:</strong><br>
-                    انتظر التشخيص...
-                </div>
-                <div class="desc-box" id="foshaDesc">
-                    <strong><i class="fas fa-book"></i> بالفصحى:</strong><br>
-                    ...
-                </div>
-                <div class="solution-box" id="solutionBox">
-                    <strong><i class="fas fa-wrench"></i> الحلول المقترحة:</strong><br>
-                    <span id="solutionText">...</span>
-                </div>
-                <div id="saveMessage" class="success-msg" style="display: none;"></div>
-            </div>
+    <!-- Main Content (hidden until auth) -->
+    <div id="mainApp" style="display: none;">
+        <div class="neon-teacher">
+            <div class="avatar-icon">🧑‍🏫✨</div>
+            <div class="neon-text">الأستاذ المتألق | منصة التقييم التفاعلية</div>
+            <div style="margin-right: auto; font-size:0.8rem;">📊 نظام تحليل المنافسة</div>
         </div>
 
-        <!-- Colonne droite: Leaderboard et Statistiques -->
-        <div class="leaderboard-section">
-            <div class="leaderboard-header">
-                <h3><i class="fas fa-chart-line"></i> التحليلات والإحصائيات</h3>
-                <i class="fas fa-trophy" style="color: #fbbf24;"></i>
+        <div class="dashboard">
+            <!-- العمود الأيسر: إدخال البيانات -->
+            <div class="card">
+                <h2>📋 بيانات المترشح</h2>
+                <div class="input-group">
+                    <label>👤 الاسم المستعار (للتصنيف)</label>
+                    <input type="text" id="candidateName" placeholder="مثال: أحمد رضا" maxlength="30">
+                </div>
+                <div class="input-group">
+                    <label>🏫 الطور / المستوى</label>
+                    <select id="teachingLevel">
+                        <option value="primary">الابتدائي (جميع التخصصات 6 نقاط)</option>
+                        <option value="middle">متوسط / ثانوي</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>📌 عدد المناصب المفتوحة</label>
+                    <input type="number" id="postCount" value="20" min="1">
+                </div>
+                <div class="input-group">
+                    <label>👥 عدد المترشحين الكلي (تقديري)</label>
+                    <input type="number" id="candidateCount" value="95" min="1">
+                </div>
+                <hr style="border-color:#2a5f55; margin: 1rem 0;">
+                <h2>🎯 سلم التنقيط المفصل</h2>
+                <div class="input-group">
+                    <label>🎓 تطابق الشهادة</label>
+                    <select id="diplomaMatch">
+                        <option value="6">مطابقة للتخصص ➜ 6 نقاط</option>
+                        <option value="4">قريبة من التخصص ➜ 4 نقاط</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>📈 المعدل العام (10-20)</label>
+                    <input type="number" id="generalAvg" step="0.01" value="14.2" min="10" max="20">
+                </div>
+                <div class="input-group">
+                    <label>🏅 الأول على الدفعة</label>
+                    <select id="topClass">
+                        <option value="0">لا</option>
+                        <option value="1">نعم (+1 نقطة)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>📅 سنة التخرج (أقدمية)</label>
+                    <input type="number" id="gradYear" value="2018">
+                </div>
+                <div class="input-group">
+                    <label>🏢 خبرة نفس الرتبة (سنوات) - نقطة لكل سنة</label>
+                    <input type="number" id="expSameRank" value="2" step="0.5">
+                </div>
+                <div class="input-group">
+                    <label>🏫 خبرة خاص (سنوات) - 0.5 لكل سنة (حد أقصى 2)</label>
+                    <input type="number" id="expPrivate" value="1" step="0.5">
+                </div>
+                <div class="input-group">
+                    <label>📚 التكوين المكمل (عدد السداسيات) *0.25 (max2)</label>
+                    <input type="number" id="semesters" value="4" step="1">
+                </div>
+                <div class="input-group">
+                    <label>📄 الأبحاث/المنشورات (0.5 لكل بحث max1)</label>
+                    <input type="number" id="researchCount" value="1" step="0.5">
+                </div>
+                <div class="input-group">
+                    <label>🎤 المقابلة الشفوية (0-3)</label>
+                    <input type="number" id="oralScore" value="2.2" step="0.1" min="0" max="3">
+                </div>
+                <div class="btn-group">
+                    <button id="calcSaveBtn">💾 احسب & سجل نتيجتي</button>
+                    <button id="resetFormBtn">🔄 إعادة تعيين</button>
+                </div>
+                <button id="testSimulateBtn" style="background:#2f5f54;">🧪 تجربة سريعة (بيانات عشوائية)</button>
             </div>
-            <div class="stats-cards">
-                <div class="stat-card">
-                    <div class="stat-value" id="totalUsers">0</div>
-                    <div>عدد المتنافسين</div>
+
+            <!-- العمود الأوسط: النتائج والتحليل -->
+            <div class="card">
+                <h2>🏆 نتيجتي الشخصية (من 30)</h2>
+                <div class="result-badge">
+                    <div style="font-size:1rem;">المجموع النهائي</div>
+                    <div class="big-score" id="finalScoreSpan">0.00</div>
+                    <div id="detailsBreakdown" style="font-size:0.7rem; margin:8px 0;"></div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="avgScore">0</div>
-                    <div>متوسط الدقة (%)</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="totalDiagnostics">0</div>
-                    <div>إجمالي التشخيصات</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="userRank">-</div>
-                    <div>ترتيبك الحالي</div>
-                </div>
+                <div id="personalAdvice" style="background:#0c2620; border-radius:1.2rem; padding:0.8rem; margin-top:1rem;"></div>
+                <div id="rankCompared" style="margin-top:1rem; background:#0b1916; border-radius:1.2rem; padding:0.8rem;"></div>
             </div>
-            <h4><i class="fas fa-ranking-star"></i> قائمة المتصدرين</h4>
-            <div class="leaderboard-list" id="leaderboardList">
-                <div style="text-align: center; padding: 1rem;">جاري التحميل...</div>
+
+            <!-- العمود الأيمن: إحصائيات ومقارنة المتسابقين -->
+            <div class="card">
+                <h2>📊 ترتيب المتسابقين (نفس التخصص)</h2>
+                <div class="stats-grid">
+                    <div class="stat-box">👥 المسجلين: <span id="totalRegistrants">0</span></div>
+                    <div class="stat-box">📈 أعلى نقطة: <span id="topScore">0</span></div>
+                    <div class="stat-box">📉 متوسط النقاط: <span id="avgScore">0</span></div>
+                </div>
+                <div id="leaderboardList" class="leaderboard" style="margin-top:1rem;">
+                    <div style="text-align:center; padding:1rem;">⚡ سيظهر هنا ترتيب المشاركين المسجلين</div>
+                </div>
+                <button id="refreshStatsBtn" style="margin-top:0.8rem; background:#22665a;">🔄 تحديث الإحصائيات</button>
+                <p style="font-size:0.7rem; margin-top:0.5rem;">* يتم حفظ النتائج محلياً (مقارنة عادلة حسب الطور والتخصص)</p>
             </div>
-            <button class="btn-secondary reset-btn" id="resetAllBtn"><i class="fas fa-globe"></i> إعادة تعيين الكل (مدير)</button>
         </div>
+        <footer>
+            📐 تنقيط دقيق وفق مراسيم وزارة التربية | منصة تحليل ذكية | التصنيف فوري حسب المنافسة الفعلية
+        </footer>
     </div>
-    <footer>© DALI AI AUTOU PRO | نظام حفظ وتحليل نتائج التشخيص | أكواد تجريبية: 1100, 0011, 4321, 1122, 2211, 9876, 6789</footer>
 </div>
 
 <script>
-    // ===================== قاعدة بيانات الأعطال (مصطلحات جزائرية) =====================
-    const faultsDB = {};
-    
-    // توليد قاعدة بيانات شاملة للأكواد (أكثر من 150 كود)
-    const commonCodes = ["P0100","P0115","P0335","P0340","P0401","P0420","P0300","P0171","P0135","P0500","P0600","P1110","P1400","P2002","P2135","P2187","P2293","P2563"];
-    
-    // إضافة أكواد تجريبية خاصة
-    const testCodes = ["1100","0011","4321","1122","2211","9876","6789","P1234","P0562","P0302"];
-    
-    function getFaultDescription(code) {
-        const upperCode = code.toUpperCase();
-        const specific = {
-            "1100": { darija: "عطل في حساس الأكسجين (لابوبين) رقم 1، الإستهلاك زايد و الروش ماشي مستقر.", fosha: "خلل في دائرة حساس الأوكسجين (البنك 1، المستشعر 1).", sol: "بدّل لابوبين الأمامي، شوف الأسلاك و الفيوزات." },
-            "0011": { darija: "مشكل في صمام الـ VVT (تيمينغ)، السيارة تضعف فالتسارع.", fosha: "خلل في نظام توقيت الصمامات المتغير.", sol: "نظف صمام التحكم فالتيمينغ، تحقق من زيت المحرك." },
-            "4321": { darija: "عطل في مضخة الوقود أو الضغط ف الرامب (كومون ريل).", fosha: "انخفاض ضغط الوقود في نظام الحقن.", sol: "بدل مضخة الوقود، نظف البخاخات." },
-            "1122": { darija: "مشكل فـ تيربو (turbo) ضعف الشحن، السيارة ماعندها ربيع.", fosha: "خلل في نظام الشحن التوربيني.", sol: "شوف wastegate و actuator تيربو." },
-            "2211": { darija: "عطل في حساس درجة حرارة الماء (تيرموستا)، المروحة تدور بزاف.", fosha: "خلل في مستشعر حرارة سائل التبريد.", sol: "بدّل التيرموستا و شوف الأسلاك." },
-            "9876": { darija: "مشكل في حساس عمود الكامات (AAC) أو التيمينغ.", fosha: "خلل في تزامن عمود الكامات.", sol: "تحقق من حساس AAC و التوقيت." },
-            "6789": { darija: "عطل في صمام EGR مسدود، الدخان كحل و نقص فالقوة.", fosha: "صمام إعادة تدوير العادم مسدود.", sol: "نظف صمام EGR وقم بتجديده." }
-        };
-        
-        if(specific[upperCode]) return specific[upperCode];
-        
-        // كود عادي OBD
-        if(upperCode.startsWith("P")) {
-            return {
-                darija: `الكود ${upperCode}: عطل في نظام المحرك أو الحساسات. تأكد من لابوبين، تيرموستا، بلوك ديمارور.`,
-                fosha: `رمز ${upperCode} يشير إلى خلل في وحدة التحكم الإلكترونية أو أحد الأنظمة المرتبطة.`,
-                sol: `قم بفحص شامل باستخدام جهاز OBD، تحقق من الأسلاك والحساسات.`
-            };
+    // ------------------- AUTHENTIFICATION ------------------
+    const validCodes = ['1100', '0011', '4321', '1122', '2211', '9876', '6789'];
+    const authModal = document.getElementById('authModal');
+    const mainApp = document.getElementById('mainApp');
+    const verifyBtn = document.getElementById('verifyBtn');
+    const accessInput = document.getElementById('accessCode');
+
+    function checkAuth() {
+        const code = accessInput.value.trim();
+        if (validCodes.includes(code)) {
+            authModal.style.display = 'none';
+            mainApp.style.display = 'block';
+            loadAllDataAndRender();
+        } else {
+            alert('❌ كود غير صالح! الرجاء استخدام أحد الأكواد المسموحة.');
         }
+    }
+    verifyBtn.addEventListener('click', checkAuth);
+    accessInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') checkAuth(); });
+
+    // ---------- LOGIQUE DE CALCUL PRÉCISE (sur 30) ----------
+    function computeTotalScoreObject() {
+        const level = document.getElementById('teachingLevel').value;
+        let diploma = parseFloat(document.getElementById('diplomaMatch').value);
+        if(level === 'primary') diploma = 6;   // ابتدائي كل التخصصات 6
         
+        const generalAvg = parseFloat(document.getElementById('generalAvg').value);
+        const topBonus = parseInt(document.getElementById('topClass').value);
+        const gradYear = parseInt(document.getElementById('gradYear').value);
+        const expSame = parseFloat(document.getElementById('expSameRank').value);
+        const expPrivate = parseFloat(document.getElementById('expPrivate').value);
+        let semesters = parseFloat(document.getElementById('semesters').value);
+        let research = parseFloat(document.getElementById('researchCount').value);
+        const oral = Math.min(3, Math.max(0, parseFloat(document.getElementById('oralScore').value)));
+        
+        // moyenne => points
+        let avgPoints = 0;
+        if (generalAvg >= 10.5 && generalAvg <= 10.99) avgPoints = 1;
+        else if (generalAvg >= 11 && generalAvg <= 11.99) avgPoints = 2;
+        else if (generalAvg >= 12 && generalAvg <= 12.99) avgPoints = 3;
+        else if (generalAvg >= 13 && generalAvg <= 13.99) avgPoints = 4;
+        else if (generalAvg >= 14 && generalAvg <= 14.99) avgPoints = 5;
+        else if (generalAvg >= 15 && generalAvg <= 15.99) avgPoints = 6;
+        else if (generalAvg >= 16) avgPoints = 7;
+        
+        let academicTotal = avgPoints + topBonus; // max 8
+        
+        // أقدمية
+        const currentYear = new Date().getFullYear();
+        let yearsGrad = Math.max(0, currentYear - gradYear);
+        let seniority = Math.min(5, yearsGrad * 0.5);
+        
+        // خبرة
+        let expRankPoints = expSame; // 1 par année
+        let expPrivatePoints = Math.min(2, expPrivate * 0.5);
+        let totalExp = expRankPoints + expPrivatePoints;
+        
+        // تكوين
+        let trainingPoints = Math.min(2, semesters * 0.25);
+        // أبحاث
+        let researchPoints = Math.min(1, research * 0.5);
+        
+        let total = diploma + academicTotal + seniority + totalExp + trainingPoints + researchPoints + oral;
+        total = Math.round(total * 100) / 100;
         return {
-            darija: `الكود ${upperCode}: عطل غير معروف. يفضل فحص السيارة لدى مختص.`,
-            fosha: `رمز غير معروف في قاعدة البيانات. يرجى التأكد من الكود المدخل.`,
-            sol: `استخدم جهاز تشخيص متقدم، أو راجع ميكانيكي متخصص.`
+            total: total,
+            breakdown: `🎓شهادة:${diploma} 📚مسار:${academicTotal} 📅أقدمية:${seniority.toFixed(1)} 💼خبرة:${totalExp.toFixed(1)} 🧾تكوين:${trainingPoints} 📑أبحاث:${researchPoints} 🎤شفوي:${oral}`
         };
     }
-    
-    // ===================== نظام الحفظ والمقارنة =====================
-    let currentUser = null;
-    
-    function getStorageKey() { return "dali_autou_leaderboard"; }
-    
-    function loadLeaderboard() {
-        const data = localStorage.getItem(getStorageKey());
-        if(data) return JSON.parse(data);
-        return [];
+
+    // ----- LOCALSTORAGE : sauvegarde des participants par spécialité (niveau + spécialité implicite)
+    // On stocke sous clé "contestants_teacher" un tableau d'objets { name, level, totalScore, timestamp, details }
+    let contestants = [];
+    function loadContestants() {
+        const stored = localStorage.getItem('contestants_teacher_v2');
+        if(stored) {
+            try{
+                contestants = JSON.parse(stored);
+            }catch(e){ contestants = []; }
+        } else { contestants = []; }
     }
-    
-    function saveLeaderboard(leaderboard) {
-        localStorage.setItem(getStorageKey(), JSON.stringify(leaderboard));
+    function saveContestants() {
+        localStorage.setItem('contestants_teacher_v2', JSON.stringify(contestants));
     }
-    
-    // حساب الدقة (Score) بناءً على الكود (نظام دقيق)
-    function calculateScore(code) {
-        const upper = code.toUpperCase();
-        // دقة محاكاة واقعية حسب نوع الكود
-        if(upper === "P0100" || upper === "1100") return 92;
-        if(upper === "P0335" || upper === "0011") return 88;
-        if(upper === "P0401" || upper === "4321") return 85;
-        if(upper === "P0420" || upper === "1122") return 87;
-        if(upper === "P0171" || upper === "2211") return 90;
-        if(upper === "9876" || upper === "6789") return 86;
-        if(upper.startsWith("P")) return 78 + Math.floor(Math.random() * 12);
-        return 75;
-    }
-    
-    function generateUserId() {
-        return "user_" + Date.now() + "_" + Math.random().toString(36).substr(2, 6);
-    }
-    
-    function getOrCreateUser() {
-        let userId = localStorage.getItem("dali_user_id");
-        let userName = localStorage.getItem("dali_user_name");
-        if(!userId) {
-            userId = generateUserId();
-            localStorage.setItem("dali_user_id", userId);
-            userName = "مستخدم_" + Math.floor(Math.random() * 1000);
-            localStorage.setItem("dali_user_name", userName);
+
+    // Enregistrer le participant actuel (s'il a un nom)
+    function saveCurrentCandidate() {
+        let name = document.getElementById('candidateName').value.trim();
+        if(name === "") {
+            alert("الرجاء إدخال اسم مستعار للمقارنة");
+            return false;
         }
-        return { id: userId, name: userName };
-    }
-    
-    function addDiagnosticResult(code, car, model, year, score, description) {
-        const user = getOrCreateUser();
-        const leaderboard = loadLeaderboard();
-        
-        const existingIndex = leaderboard.findIndex(u => u.userId === user.id);
-        const newEntry = {
-            userId: user.id,
-            userName: user.name,
-            lastCode: code,
-            car: car,
-            model: model,
-            year: year,
-            score: score,
+        const level = document.getElementById('teachingLevel').value;
+        const levelLabel = (level === 'primary') ? 'الابتدائي' : 'متوسط/ثانوي';
+        const result = computeTotalScoreObject();
+        // éviter les doublons multiples abusifs ? on autorise mais on peut prévenir: on peut garder jusqu'à 100 enregistrements
+        contestants.push({
+            name: name,
+            level: level,
+            levelLabel: levelLabel,
+            totalScore: result.total,
             timestamp: Date.now(),
-            diagnosticsCount: 1
-        };
-        
-        if(existingIndex !== -1) {
-            // تحديث المستخدم الحالي
-            leaderboard[existingIndex].lastCode = code;
-            leaderboard[existingIndex].car = car;
-            leaderboard[existingIndex].model = model;
-            leaderboard[existingIndex].year = year;
-            leaderboard[existingIndex].score = Math.max(leaderboard[existingIndex].score, score);
-            leaderboard[existingIndex].diagnosticsCount += 1;
-            leaderboard[existingIndex].timestamp = Date.now();
-        } else {
-            leaderboard.push(newEntry);
-        }
-        
-        // ترتيب حسب النقاط
-        leaderboard.sort((a,b) => b.score - a.score);
-        saveLeaderboard(leaderboard);
-        return leaderboard;
+            details: result.breakdown
+        });
+        // tri décroissant
+        contestants.sort((a,b) => b.totalScore - a.totalScore);
+        if(contestants.length > 150) contestants = contestants.slice(0,150);
+        saveContestants();
+        return true;
     }
-    
-    function updateUI() {
-        const leaderboard = loadLeaderboard();
-        const user = getOrCreateUser();
-        const userEntry = leaderboard.find(u => u.userId === user.id);
-        const rank = leaderboard.findIndex(u => u.userId === user.id) + 1;
+
+    // Afficher classement filtré par le même niveau (le niveau choisi dans le formulaire)
+    function renderLeaderboardAndStats() {
+        const currentLevel = document.getElementById('teachingLevel').value;
+        const filtered = contestants.filter(c => c.level === currentLevel);
+        const totalReg = filtered.length;
+        const topScoreVal = filtered.length ? Math.max(...filtered.map(c=>c.totalScore)) : 0;
+        const avgScoreVal = filtered.length ? (filtered.reduce((acc,c)=>acc+c.totalScore,0)/filtered.length).toFixed(2) : 0;
+        document.getElementById('totalRegistrants').innerText = totalReg;
+        document.getElementById('topScore').innerText = topScoreVal.toFixed(2);
+        document.getElementById('avgScore').innerText = avgScoreVal;
         
-        document.getElementById("totalUsers").innerText = leaderboard.length;
-        const avg = leaderboard.length ? Math.round(leaderboard.reduce((a,b)=>a+b.score,0)/leaderboard.length) : 0;
-        document.getElementById("avgScore").innerText = avg;
-        document.getElementById("totalDiagnostics").innerText = leaderboard.reduce((a,b)=>a+b.diagnosticsCount,0);
-        document.getElementById("userRank").innerHTML = rank ? `#${rank}` : "-";
-        
-        // عرض قائمة المتصدرين
-        const container = document.getElementById("leaderboardList");
-        if(leaderboard.length === 0) {
-            container.innerHTML = '<div style="text-align:center; padding:1rem;">لا توجد بيانات بعد، قم بتشخيص أول عطل</div>';
+        const leaderDiv = document.getElementById('leaderboardList');
+        if(filtered.length === 0){
+            leaderDiv.innerHTML = '<div style="text-align:center; padding:0.8rem;">📭 لا يوجد متسابقون مسجلون بعد</div>';
             return;
         }
+        let html = '';
+        filtered.slice(0, 20).forEach((c, idx) => {
+            html += `<div class="rank-item">
+                        <span><strong>${idx+1}</strong> - ${c.name}</span>
+                        <span style="color:#7fffea; font-weight:bold;">${c.totalScore.toFixed(2)} / 30</span>
+                     </div>`;
+        });
+        if(filtered.length > 20) html += `<div style="font-size:0.7rem;">+${filtered.length-20} آخرين ...</div>`;
+        leaderDiv.innerHTML = html;
         
-        container.innerHTML = leaderboard.slice(0, 15).map((entry, idx) => {
-            const isCurrent = entry.userId === user.id;
-            return `
-                <div class="leaderboard-item ${isCurrent ? 'current-user' : ''}">
-                    <span class="rank">${idx+1}</span>
-                    <span class="user-code">${entry.userName}</span>
-                    <span class="score">${entry.score}%</span>
-                    <span style="font-size:0.7rem;">${entry.lastCode}</span>
-                </div>
-            `;
-        }).join('');
+        // Comparer la note actuelle avec les autres du même niveau
+        const currentScore = computeTotalScoreObject().total;
+        let betterCount = filtered.filter(c => c.totalScore > currentScore).length;
+        let equalCount = filtered.filter(c => c.totalScore === currentScore && c.name !== document.getElementById('candidateName').value.trim()).length;
+        let rankPosition = betterCount + 1;
+        let percentil = filtered.length ? ((filtered.length - betterCount) / filtered.length * 100).toFixed(1) : 0;
+        let compareHtml = `📌 موقعك الحالي: ${betterCount} متسابق أعلى منك، ${equalCount} مساوٍ. الترتيب التقريبي: ${rankPosition} من ${filtered.length} (أفضل من ${percentil}%).`;
+        document.getElementById('rankCompared').innerHTML = `<div style="background:#0e2a24; border-radius:1rem; padding:0.6rem;">🔍 مقارنة مع المسجلين في نفس الطور:<br>${compareHtml}</div>`;
+    }
+
+    // تحديث الواجهة (نتيجة + تحليل ذكي + مقارنة)
+    function updateUIAndAdvice() {
+        const res = computeTotalScoreObject();
+        const finalScore = res.total;
+        document.getElementById('finalScoreSpan').innerText = finalScore.toFixed(2) + " / 30";
+        document.getElementById('detailsBreakdown').innerHTML = res.breakdown;
+        
+        // إحصائيات المنافسة المدخلة
+        const posts = parseInt(document.getElementById('postCount').value);
+        const candidatesTotal = parseInt(document.getElementById('candidateCount').value);
+        const ratio = (posts / candidatesTotal) * 100;
+        let adviceMsg = "";
+        let strengthClass = "";
+        
+        // تحليل دقيق معادلة حقيقية
+        if(finalScore >= 20) {
+            adviceMsg = `⭐️⭐️ مرشح قوي جداً (${finalScore}/30). فرصتك كبيرة جداً حتى مع منافسة شديدة. أنت من النخبة.`;
+            if(ratio < 8) adviceMsg += " نسبة المناصب ضيقة لكن نقاطك العالية تبقيك في المقدمة.";
+            else adviceMsg += " حظوظ واردة بقوة إن شاء الله.";
+        } else if(finalScore >= 16) {
+            adviceMsg = `✅ مرشح قوي (${finalScore}/30). غالباً ضمن المقبولين أو الاحتياط الأول حسب عدد المترشحين.`;
+            if(ratio < 10) adviceMsg += " المنافسة عالية، لكن نقاطك تساعدك للترشح في الاحتياط المتقدم.";
+            else adviceMsg += " نسب القبول متوسطة، استمر في التحضير.";
+        } else if(finalScore >= 12) {
+            adviceMsg = `⚠️ مرشح متوسط (${finalScore}/30). قبولك يعتمد على الحظ وعدد المناصب. قد تكون في الاحتياط.`;
+            if(ratio > 18) adviceMsg += " بسبب كثافة المناصب نسبياً تبقى فرصة واردة، لكن يُنصح بتعزيز النقاط.";
+            else adviceMsg += " المنافسة قوية، أنت بحاجة لتحسين ملفك للمسابقات القادمة.";
+        } else if(finalScore >= 9) {
+            adviceMsg = `📉 نقاط ضعيفة نسبياً (${finalScore}/30). صعوبة القبول في هذه الدورة. نوصي بالاستعداد المبكر وزيادة الخبرة/التكوين.`;
+        } else {
+            adviceMsg = `❗️ نقاط غير كافية (${finalScore}/30). يجب التركيز على تحسين الشهادة، الخبرة، والتكوين للمشاركة المستقبلية.`;
+        }
+        
+        // إضافة تحليل دقيق حسب المناصب والمترشحين
+        let competitiveIndex = (posts / candidatesTotal) * 100;
+        let suggestion = "";
+        if(finalScore >= 15 && competitiveIndex < 12) suggestion = " - المنافسة شرسة لكن نقاطك تخولك للاحتياط.";
+        else if(finalScore < 14 && competitiveIndex > 15) suggestion = " - عدد المناصب مقبول لكن يلزمك رفع النقاط عبر التكوين أو الخبرة.";
+        else if(finalScore < 10) suggestion = " - أنصحك بالتركيز على المسابقات القادمة واكتساب خبرة سنوية.";
+        document.getElementById('personalAdvice').innerHTML = `<div style="font-weight:bold;">📢 التقييم الشامل:</div> ${adviceMsg} ${suggestion}<br><span style="font-size:0.7rem;">📊 عدد المناصب:${posts} | إجمالي المترشحين:${candidatesTotal} | نسبة القبول:${ratio.toFixed(1)}%</span>`;
+        
+        // مقارنة فورية مع قاعدة البيانات
+        renderLeaderboardAndStats();
     }
     
-    // تشخيص وعرض وحفظ
-    function performDiagnostic(codeToUse = null) {
-        let code = codeToUse || document.getElementById("customCode").value.trim();
-        if(!code) {
-            alert("الرجاء إدخال كود العطل");
+    // حفظ + تحديث شامل
+    function handleSaveAndCompute() {
+        const nameField = document.getElementById('candidateName').value.trim();
+        if(nameField === "") {
+            alert("يرجى كتابة اسم مستعار ليظهر في الترتيب");
             return;
         }
-        
-        const car = document.getElementById("carBrand").value;
-        const model = document.getElementById("carModel").value;
-        const year = document.getElementById("carYear").value;
-        
-        const fault = getFaultDescription(code);
-        const score = calculateScore(code);
-        
-        document.getElementById("displayCode").innerHTML = code;
-        document.getElementById("darijaDesc").innerHTML = `<strong><i class="fas fa-comment"></i> بالدارجة الجزائرية:</strong><br>${fault.darija}`;
-        document.getElementById("foshaDesc").innerHTML = `<strong><i class="fas fa-book"></i> بالفصحى:</strong><br>${fault.fosha}`;
-        document.getElementById("solutionText").innerHTML = fault.sol;
-        
-        // حفظ النتيجة
-        addDiagnosticResult(code, car, model, year, score, fault);
-        updateUI();
-        
-        const msgDiv = document.getElementById("saveMessage");
-        msgDiv.style.display = "block";
-        msgDiv.innerHTML = `✅ تم حفظ التشخيص! الدقة: ${score}% | تم تحديث الترتيب`;
-        setTimeout(() => { msgDiv.style.display = "none"; }, 3000);
-    }
-    
-    // إعادة تعيين بيانات المستخدم فقط
-    function resetMyData() {
-        const userId = localStorage.getItem("dali_user_id");
-        if(userId) {
-            let leaderboard = loadLeaderboard();
-            leaderboard = leaderboard.filter(u => u.userId !== userId);
-            saveLeaderboard(leaderboard);
-            updateUI();
-            alert("تم حذف بياناتك بنجاح");
-        } else {
-            alert("لا توجد بيانات");
+        const success = saveCurrentCandidate();
+        if(success) {
+            updateUIAndAdvice();
+            alert(`✅ تم تسجيل ${nameField} بنجاح. يمكنك مشاهدة ترتيبك بين المتسابقين.`);
         }
     }
     
-    function resetAllData() {
-        if(confirm("⚠️ هل أنت متأكد؟ هذا سيحذف جميع بيانات المتسابقين!")) {
-            localStorage.removeItem("dali_autou_leaderboard");
-            localStorage.removeItem("dali_user_id");
-            localStorage.removeItem("dali_user_name");
-            updateUI();
-            alert("تم إعادة تعيين الكل");
-            location.reload();
-        }
+    // إعادة تعيين المدخلات (لا يحذف قاعدة البيانات)
+    function resetFormFields() {
+        document.getElementById('candidateName').value = "";
+        document.getElementById('teachingLevel').value = "primary";
+        document.getElementById('postCount').value = "20";
+        document.getElementById('candidateCount').value = "95";
+        document.getElementById('diplomaMatch').value = "6";
+        document.getElementById('generalAvg').value = "14.2";
+        document.getElementById('topClass').value = "0";
+        document.getElementById('gradYear').value = "2018";
+        document.getElementById('expSameRank').value = "2";
+        document.getElementById('expPrivate').value = "1";
+        document.getElementById('semesters').value = "4";
+        document.getElementById('researchCount').value = "1";
+        document.getElementById('oralScore').value = "2.2";
+        updateUIAndAdvice();
     }
     
-    // تجربة عشوائية
-    function randomTest() {
-        const allTestCodes = [...commonCodes, ...testCodes];
-        const randomCode = allTestCodes[Math.floor(Math.random() * allTestCodes.length)];
-        document.getElementById("customCode").value = randomCode;
-        performDiagnostic(randomCode);
+    // تجربة سريعة: remplir avec un profil réaliste et enregistrer auto
+    function quickTestSimulation() {
+        const fakeNames = ["أسماء بنت علي", "ياسر محمود", "ليلى كمال", "سيف الدين", "منى السعيد"];
+        const randomName = fakeNames[Math.floor(Math.random() * fakeNames.length)] + "_" + Math.floor(Math.random()*100);
+        document.getElementById('candidateName').value = randomName;
+        // générer des notes aléatoires cohérentes
+        document.getElementById('generalAvg').value = (12 + Math.random() * 5).toFixed(2);
+        document.getElementById('expSameRank').value = Math.floor(Math.random() * 5);
+        document.getElementById('oralScore').value = (1 + Math.random() * 2).toFixed(1);
+        document.getElementById('semesters').value = Math.floor(Math.random() * 8);
+        document.getElementById('researchCount').value = Math.random() > 0.7 ? 1 : 0;
+        document.getElementById('topClass').value = Math.random() > 0.8 ? "1" : "0";
+        updateUIAndAdvice();
+        saveCurrentCandidate();
+        alert(`🧪 تجربة: تم إضافة "${randomName}" إلى قائمة المنافسين.`);
     }
     
-    // إعداد نماذج السيارات
-    const brandModels = {
-        "Renault": ["Clio","Mégane","Symbol","Logan","Sandero"],
-        "Peugeot": ["208","308","3008","Partner"],
-        "Citroën": ["C3","C4","C-Elysée","Berlingo"],
-        "Dacia": ["Sandero","Logan","Duster"],
-        "Volkswagen": ["Golf","Passat","Polo"],
-        "Hyundai": ["i10","i20","i30","Tucson"],
-        "Kia": ["Picanto","Rio","Sportage"],
-        "Mercedes": ["Classe A","Classe C"],
-        "BMW": ["Serie 1","Serie 3"],
-        "Ford": ["Focus","Fiesta"]
-    };
-    
-    function updateModels() {
-        const brand = document.getElementById("carBrand").value;
-        const models = brandModels[brand] || ["موديل1","موديل2"];
-        const modelSelect = document.getElementById("carModel");
-        modelSelect.innerHTML = models.map(m => `<option>${m}</option>`).join('');
+    function loadAllDataAndRender() {
+        loadContestants();
+        updateUIAndAdvice();
     }
-    document.getElementById("carBrand").addEventListener("change", updateModels);
-    updateModels();
     
-    // عرض الأكواد التجريبية
-    const testCodesList = ["1100","0011","4321","1122","2211","9876","6789"];
-    const container = document.getElementById("randomCodesContainer");
-    container.innerHTML = testCodesList.map(code => `<span class="random-badge" onclick="document.getElementById('customCode').value='${code}'; performDiagnostic('${code}');">${code}</span>`).join('');
-    
-    // Events
-    document.getElementById("diagnosticBtn").addEventListener("click", () => performDiagnostic());
-    document.getElementById("testBtn").addEventListener("click", randomTest);
-    document.getElementById("resetLocalBtn").addEventListener("click", resetMyData);
-    document.getElementById("resetAllBtn").addEventListener("click", resetAllData);
-    
-    // Initialisation
-    updateUI();
-    window.performDiagnostic = performDiagnostic; // pour les badges onclick
+    // Event listeners
+    document.getElementById('calcSaveBtn')?.addEventListener('click', handleSaveAndCompute);
+    document.getElementById('resetFormBtn')?.addEventListener('click', resetFormFields);
+    document.getElementById('testSimulateBtn')?.addEventListener('click', quickTestSimulation);
+    document.getElementById('refreshStatsBtn')?.addEventListener('click', () => { loadContestants(); renderLeaderboardAndStats(); updateUIAndAdvice(); alert("تم تحديث الإحصائيات"); });
+    // déclencher calcul à chaque modification
+    const inputsToWatch = ['teachingLevel','diplomaMatch','generalAvg','topClass','gradYear','expSameRank','expPrivate','semesters','researchCount','oralScore','postCount','candidateCount'];
+    inputsToWatch.forEach(id => {
+        const el = document.getElementById(id);
+        if(el) el.addEventListener('input', () => updateUIAndAdvice());
+        if(el && id === 'teachingLevel') el.addEventListener('change', () => { updateUIAndAdvice(); renderLeaderboardAndStats(); });
+    });
+    // initialisation du niveau
+    window.updateUIAndAdvice = updateUIAndAdvice;
 </script>
 </body>
 </html>
